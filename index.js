@@ -47,3 +47,30 @@ app.get('/auth/facebook/callback',
   function(req, res) {
     res.redirect('/success');
   });
+
+
+  /*  GITHUB AUTH  */
+
+const GitHubStrategy = require('passport-github').Strategy;
+
+const GITHUB_CLIENT_ID = "your app id"
+const GITHUB_CLIENT_SECRET = "your app secret";
+
+passport.use(new GitHubStrategy({
+    clientID: GITHUB_CLIENT_ID,
+    clientSecret: GITHUB_CLIENT_SECRET,
+    callbackURL: "/auth/github/callback"
+  },
+  function(accessToken, refreshToken, profile, cb) {
+      return cb(null, profile);
+  }
+));
+
+app.get('/auth/github',
+  passport.authenticate('github'));
+
+app.get('/auth/github/callback',
+  passport.authenticate('github', { failureRedirect: '/error' }),
+  function(req, res) {
+    res.redirect('/success');
+  });
